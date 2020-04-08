@@ -20,6 +20,7 @@ if is_admin():
     window = tk.Tk() #creates window
     window.tk.call('tk', 'scaling', 2.0)
     window.geometry("1050x380")
+    window.resizable(width=False,height=False)
     window.configure(bg='#333338')
     button = tk.Button(text ="Change",height = 1,width=10,fg="#d6d6c2",bg="blue")
     entry  = tk.Entry(width=20)
