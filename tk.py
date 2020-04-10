@@ -21,6 +21,8 @@ if is_admin():
     window.tk.call('tk', 'scaling', 2.0)
     window.geometry("1050x380")
     window.resizable(width=False,height=False)
+    window.title("MAcSpoof")
+    #window.iconbitmap('m.ico')
     window.configure(bg='#333338')
     button = tk.Button(text ="Change",height = 1,width=10,fg="#d6d6c2",bg="blue")
     entry  = tk.Entry(width=20)
@@ -49,7 +51,7 @@ if is_admin():
                 if choice <= len(Addlist):
                     if choice >= 1:
                         choice = int(choice)
-                        print(choice)#mac change code must go here beacuse i fucked up the design
+                        #print(choice)#mac change code must go here beacuse i fucked up the design
                         progress = Progressbar(window,orient=HORIZONTAL,length=1010,mode='determinate')
                         progress.place(anchor='w',x=20,y=350)
                         #asd = input()
@@ -94,9 +96,15 @@ if is_admin():
                         progress['value'] = 50
                         window.update_idletasks()
                         for i in list:
+                            '''
+                            progress['value'] = 60
+                            window.update_idletasks()
+                            '''
+                            #works here
                             driver_description = i.replace('NetworkAddress','DriverDesc')
                             j = i.replace('NetworkAddress','OriginalNetworkAddress')
-                            if os.popen(driver_description).read().split('\n')[0] == Adapterlist[choice - 1]:
+                            if os.popen(driver_description).read().split('\n')[0] == Adapterlist[choice - 1]:  #os popen probably gives output in windowed mode check here
+                                #does not work here if loop problem
                                 cou = os.popen(i).read().split('\n')
                                 cou = str(''.join(cou))
                                 cou = cou.split('-')
@@ -104,9 +112,9 @@ if is_admin():
                                 if cou.lower() == i2.lower():
                                     set_value = i.replace('Get-ItemPropertyValue','Set-ItemProperty')
                                     try:
-                                        os.system(set_value + " -Value " + random_mac)
+                                        os.system(set_value + " -Value " + random_mac + '> deb.txt')
                                     except:
-                                        print('cant change value')
+                                        #print('cant change value')
                                         time.sleep(5)
                                         exit()
                                 try:
@@ -114,26 +122,29 @@ if is_admin():
                                     #print('registry_value = {}'.format(registry_value[33:62]))#test
                                     if registry_value[33:62] == 'NetworkAddress does not exist':
                                         new_item_entry = i.replace('Get-ItemPropertyValue','New-ItemProperty')
-                                        os.system(new_item_entry + " -Value "+ random_mac + " -PropertyType 'String' ")
-                                        print('Address Changed Restarting Devices')
+                                        os.system(new_item_entry + " -Value "+ random_mac + " -PropertyType 'String' > deb.txt")
+                                        #print('Address Changed Restarting Devices')
                                         break
                                     else:
-                                        os.system(set_value + " -Value " + random_mac)
+                                        os.system(set_value + " -Value " + random_mac + '> deb.txt')
                                 except:
-                                    print('no works on 139')
+                                    #print('no works on 139')
+                                    jlsdfsdf = 10
+                        #use else conditioin if possible
+                        #also possible admin rights problem
                         progress['value'] = 70
                         window.update_idletasks()
                         try:
-                            os.system('powershell netsh interface set interface name="Wi-Fi" admin=disabled')
-                            os.system('powershell netsh interface set interface name="Wi-Fi" admin=enabled')
-                            os.system('powershell netsh interface set interface name="tap" admin=disabled')
-                            os.system('powershell netsh interface set interface name="tap" admin=enabled')
-                            os.system('powershell netsh interface set interface name="Ethernet" admin=disabled')
-                            os.system('powershell netsh interface set interface name="Ethernet" admin=enabled')
+                            os.system('powershell netsh interface set interface name="Wi-Fi" admin=disabled > deb.txt')
+                            os.system('powershell netsh interface set interface name="Wi-Fi" admin=enabled > deb.txt')
+                            os.system('powershell netsh interface set interface name="tap" admin=disabled > deb.txt')
+                            os.system('powershell netsh interface set interface name="tap" admin=enabled > deb.txt')
+                            os.system('powershell netsh interface set interface name="Ethernet" admin=disabled > deb.txt')
+                            os.system('powershell netsh interface set interface name="Ethernet" admin=enabled > deb.txt')
                         except:
-                            print('Problem at restarting device do it manually\n')
-                            print("Press any key to Continue\n")
-                            lahaghakjgh = input()
+                            #print('Problem at restarting device do it manually\n')
+                            #print("Press any key to Continue\n")
+                            #lahaghakjgh = input()
                             exit()
                         progress['value'] = 100
                         window.update_idletasks()
@@ -156,12 +167,12 @@ if is_admin():
                         MessageBox = ctypes.windll.user32.MessageBoxW
                         MessageBox(None, 'Wrong Choice', 'Window title', 0)
                         entry1.delete(0,tk.END)
-                        print('134')
+                        #print('134')
                 else:
                     entry1.delete(0,tk.END)
                     MessageBox = ctypes.windll.user32.MessageBoxW
                     MessageBox(None, 'Wrong Choice', 'Window title', 0)
-                    print('140')
+                    #print('140')
             entry1.bind('<Return>',change_mac_address)
             button_choose = tk.Button(text='Go',height=0,width=12,fg="white",bg="blue",padx=5,command=change_mac_address,master=window)
             button_choose.pack(pady=15,anchor='w')
@@ -226,5 +237,8 @@ if is_admin():
     label.after(3000,clear_label)
 else:
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
-window.mainloop()  #main window opens here
+try:
+    window.mainloop()  #main window opens here
+except:
+    sdsasdasdadd = ''
 is_admin()
