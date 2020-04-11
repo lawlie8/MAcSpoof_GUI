@@ -240,5 +240,5 @@ else:
 try:
     window.mainloop()  #main window opens here
 except:
-    sdsasdasdadd = ''
+    tomato = 'potato'
 is_admin()
