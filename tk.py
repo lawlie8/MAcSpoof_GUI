@@ -96,10 +96,6 @@ if is_admin():
                         progress['value'] = 50
                         window.update_idletasks()
                         for i in list:
-                            '''
-                            progress['value'] = 60
-                            window.update_idletasks()
-                            '''
                             #works here
                             driver_description = i.replace('NetworkAddress','DriverDesc')
                             j = i.replace('NetworkAddress','OriginalNetworkAddress')
