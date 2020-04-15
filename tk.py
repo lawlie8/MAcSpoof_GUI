@@ -39,8 +39,6 @@ if is_admin():
             entry1.pack(anchor='w')
             entry1.focus()
             def change_mac_address(event):
-
-                #adapter_label.place_forget()
                 choice = entry1.get()
                 try:
                     choice = int(choice)
