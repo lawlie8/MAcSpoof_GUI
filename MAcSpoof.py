@@ -9,6 +9,7 @@ import ctypes
 import random
 from tkinter import *
 from tkinter.ttk import *
+#netsh interface ipv4 show interfaces
 try:
     def is_admin():
         try:
@@ -149,16 +150,43 @@ try:
                                     pass
 
                                 try:
+                                    inter = open("interface.law","w+")
+                                    subprocess.call('netsh interface ipv4 show interfaces',shell=True,stdout=inter,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
+                                    inter.close()
+                                    inter = open("interface.law","r+")
+                                    x = inter.readlines()
+                                    interface_list = []
+                                    for i in x:
+                                        i = i.split('ted')
+                                        i=i[-1]
+                                        i=i.strip(" ")
+                                        i = i.strip("\n")
+                                        list = []
+                                        list.append(i)
+                                        if list[0][0:3] != "Idx" and list[0][0:3] != "---":
+                                            interface_list.append(list[0])
+                                    def restart(interface_name):
+                                        subprocess.call('powershell netsh interface set interface name="'+interface_name+'" admin=disabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
+                                        subprocess.call('powershell netsh interface set interface name="'+interface_name+'" admin=enabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
+                                    
+                                    
+                                    import threading
+                                    for interface_name in interface_list:
+                                        #print(interface_name)
+                                        interface_thread = threading.Thread(target=restart,daemon=True,args=(interface_name,))
+                                        interface_thread.start()
+                                    
+                                    
+                                    '''
                                     subprocess.call('powershell netsh interface set interface name="Wi-Fi" admin=disabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
                                     subprocess.call('powershell netsh interface set interface name="Wi-Fi" admin=enabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
                                     subprocess.call('powershell netsh interface set interface name="tap" admin=disabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
                                     subprocess.call('powershell netsh interface set interface name="tap" admin=enabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
                                     subprocess.call('powershell netsh interface set interface name="Ethernet" admin=disabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
                                     subprocess.call('powershell netsh interface set interface name="Ethernet" admin=enabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
-
-                                    subprocess.call('del temp_file temp_file2',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
-                                    #subprocess.call('powershell netsh interface set interface name="Ethernet" admin=enabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
-
+                                    '''
+                                    subprocess.call('del temp_file interface.law',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
+                                    
                                 except:
                                     exit()
                                 progress['value'] = 100
