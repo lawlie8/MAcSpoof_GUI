@@ -35,11 +35,15 @@ try:
         def entry(Addlist,Adapterlist,adapter_label):
             entry = tk.Entry()
             entry.insert(0," Insert your option here")
+            entry.place(x=795,y=245)
+            #entry.pack(anchor='e',side="right",pady=0,padx=50)
             def clear_entry():
                 entry.place_forget()
                 entry.destroy()
                 entry1 = tk.Entry()
-                entry1.pack(anchor='w')
+                #entry1.pack(anchor='e',side="right",pady=0,padx=50)
+                entry1.place(x=795,y=245)
+            
                 entry1.focus()
                 def change_mac_address(event):
                     choice = entry1.get()
@@ -163,7 +167,7 @@ try:
                                         i = i.strip("\n")
                                         list = []
                                         list.append(i)
-                                        if list[0][0:3] != "Idx" and list[0][0:3] != "---":
+                                        if list[0][0:3] != "Idx" and list[0][0:3] != "---" and list[0] != '':
                                             interface_list.append(list[0])
                                     def restart(interface_name):
                                         subprocess.call('powershell netsh interface set interface name="'+interface_name+'" admin=disabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -173,9 +177,9 @@ try:
                                     import threading
                                     for interface_name in interface_list:
                                         #print(interface_name)
-                                        interface_thread = threading.Thread(target=restart,daemon=True,args=(interface_name,))
+                                        interface_thread = threading.Thread(target=restart,args=(interface_name,))
                                         interface_thread.start()
-                                    
+                                    interface_thread.join()
                                     
                                     '''
                                     subprocess.call('powershell netsh interface set interface name="Wi-Fi" admin=disabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -185,24 +189,27 @@ try:
                                     subprocess.call('powershell netsh interface set interface name="Ethernet" admin=disabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
                                     subprocess.call('powershell netsh interface set interface name="Ethernet" admin=enabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
                                     '''
-                                    subprocess.call('del temp_file interface.law',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
                                     
                                 except:
                                     exit()
                                 progress['value'] = 100
                                 window.update_idletasks()
+                                subprocess.call('del temp_file interface.law',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
+                                    
                                 MessageBox = ctypes.windll.user32.MessageBoxW
                                 MessageBox(None, 'Mac Address Changed to '+ random_mac, 'Window title', 0)
                                 entry1.delete(0,tk.END)
-                                adapter_label.place_forget()
-                                adapter_label.destroy()
-                                entry1.place_forget()
-                                entry1.destroy()
-                                button_choose.place_forget()
-                                button_choose.destroy()
-                                progress.place_forget()
-                                progress.destroy()
-                                adapter_list()
+                                def refresh():
+                                    adapter_label.place_forget()
+                                    adapter_label.destroy()
+                                    entry1.place_forget()
+                                    entry1.destroy()
+                                    button_choose.place_forget()
+                                    button_choose.destroy()
+                                    progress.place_forget()
+                                    progress.destroy()
+                                    adapter_list()
+                                refresh()
                                 '''***** ENDS HERE *****'''
                                 #window.destroy()
                                 '''***** ENDS HERE *****'''
@@ -218,11 +225,26 @@ try:
                             #print('140')
                     except:
                         stack = 'overflow'
+                def refresh():
+                    adapter_label.place_forget()
+                    adapter_label.destroy()
+                    entry1.place_forget()
+                    entry1.destroy()
+                    button_choose.place_forget()
+                    button_choose.destroy()
+                    try:
+                        progress.place_forget()
+                        progress.destroy()
+                    except:
+                        pass
+                    adapter_list()
                 entry1.bind('<Return>',change_mac_address)
-                button_choose = tk.Button(text='Go',height=0,width=12,fg="white",bg="blue",padx=5,command=change_mac_address,master=window)
-                button_choose.pack(pady=15,anchor='w')
-            entry.pack(anchor='w')
-            entry.after(2000,clear_entry)
+                button_choose = tk.Button(text='Go',height=0,width=12,fg="white",bg="blue",padx=0,command=change_mac_address,master=window)
+                button_choose.place(x=795,y=280)#pady=0,padx=50,anchor='se',side='left',fill='x')
+                button_refresh = tk.Button(text='scan',height=0,width=6,fg="white",bg="blue",padx=0,command=refresh,master=window)
+                button_refresh.place(x=932,y=280)
+            #entry.pack(anchor='w')
+            entry.after(1000,clear_entry)
         def adapter_list():
                 dl = []
                 ml = []
@@ -266,13 +288,13 @@ try:
                     label_text += i+"  :  "+k+"\t\t"+h+"\n"
                 label_text = label_text.strip(" ")
                 adapter_label = tk.Label(text = label_text,justify="left",fg='#d6d6c2',bg='#333338')
-                adapter_label.pack(anchor='w',side ="left",padx=30)
+                adapter_label.pack(anchor='n',side ="left",padx=30,fill='x')
                 x.close()
                 os.system('del ip.txt')
                 entry(Addlist,Adapterlist,adapter_label)
         def label3():
             label3 = tk.Label(text="Devices Found :",fg="#f7a483",bg='#333338')
-            label3.place(x=10,y=100)
+            label3.pack(padx=10,side="top",anchor="w",pady=50)
             adapter_list()
         def clear_label():
             label.place_forget()
