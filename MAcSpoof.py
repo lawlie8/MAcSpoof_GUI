@@ -38,7 +38,7 @@ try:
                 entry.place_forget()
                 entry.destroy()
                 entry1 = tk.Entry()
-                entry1.pack(anchor='w')
+                entry1.place(x='540',y='95')
                 entry1.focus()
                 def change_mac_address(event):
                     choice = entry1.get()
@@ -52,10 +52,8 @@ try:
                         if choice <= len(Addlist):
                             if choice >= 1:
                                 choice = int(choice)
-                                #print(choice)#mac change code must go here beacuse i fucked up the design
                                 progress = Progressbar(window,orient=HORIZONTAL,length=1010,mode='determinate')
                                 progress.place(anchor='w',x=20,y=350)
-                                #asd = input()
                                 progress['value'] = 10
                                 window.update_idletasks()
                                 random_mac = "02"
@@ -98,24 +96,21 @@ try:
                                 window.update_idletasks()
                                 try:
                                     for i in list:
-                                        #works here
                                         driver_description = i.replace('NetworkAddress','DriverDesc')
                                         j = i.replace('NetworkAddress','OriginalNetworkAddress')
-                                        file = open('temp_file','w+')
+                                        file = open('temp_file.law','w+')
                                         subprocess.call(driver_description,shell=True,stdout=file,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
-                                        file = open('temp_file','r+')
+                                        file = open('temp_file.law','r+')
                                         aram = file.readlines()
                                         dada = aram[0].strip()
                                         if dada == Adapterlist[choice - 1]:  #os popen probably gives output in windowed mode check here
                                             progress['value'] = 60
                                             window.update_idletasks()
-                                            #doesnt work here
-                                            dile = open('temp_file2','w+')
+                                            dile = open('temp_file2.law','w+')
                                             subprocess.call(i,shell=True,stdout=dile,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
-                                            dile = open('temp_file2','r+')
+                                            dile = open('temp_file2.law','r+')
                                             aram2 = dile.readlines()
                                             cou = aram2[0].strip()
-                                            #cou = os.popen(i).read().split('\n')
                                             cou = str(''.join(cou))
                                             cou = cou.split('-')
                                             cou = str(''.join(cou))
@@ -125,19 +120,15 @@ try:
                                                 set_value = i.replace('Get-ItemPropertyValue','Set-ItemProperty')
                                                 try:
                                                     subprocess.call(set_value + " -Value " + random_mac,shell=True,stdout=dile,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
-
-                                                    #os.system(set_value + " -Value " + random_mac)
                                                 except:
                                                     time.sleep(5)
                                                     exit()
                                             try:
                                                 set_value = i.replace('Get-ItemPropertyValue','Set-ItemProperty')
                                                 registry_value = os.popen(i).read().split('\n')[0] #test
-                                                #print('registry_value = {}'.format(registry_value[33:62]))#test
                                                 if registry_value[33:62] == 'NetworkAddress does not exist':
                                                     new_item_entry = i.replace('Get-ItemPropertyValue','New-ItemProperty')
                                                     os.system(new_item_entry + " -Value "+ random_mac + " -PropertyType 'String'")
-
                                                     break
                                                 else:
                                                     os.system(set_value + " -Value " + random_mac)
@@ -147,7 +138,6 @@ try:
                                                 pass
                                 except Exception as e:
                                     pass
-
                                 try:
                                     subprocess.call('powershell netsh interface set interface name="Wi-Fi" admin=disabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
                                     subprocess.call('powershell netsh interface set interface name="Wi-Fi" admin=enabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -155,16 +145,13 @@ try:
                                     subprocess.call('powershell netsh interface set interface name="tap" admin=enabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
                                     subprocess.call('powershell netsh interface set interface name="Ethernet" admin=disabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
                                     subprocess.call('powershell netsh interface set interface name="Ethernet" admin=enabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
-
-                                    subprocess.call('del temp_file temp_file2',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
-                                    #subprocess.call('powershell netsh interface set interface name="Ethernet" admin=enabled',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
-
+                                    subprocess.call('del temp_file.law;del temp_file2.law',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
                                 except:
-                                    exit()
+                                    window.destroy()
                                 progress['value'] = 100
                                 window.update_idletasks()
                                 MessageBox = ctypes.windll.user32.MessageBoxW
-                                MessageBox(None, 'Mac Address Changed to '+ random_mac, 'Window title', 0)
+                                MessageBox(None, 'Mac Address Changed to '+ random_mac, 'MAcSpoof', 0)
                                 entry1.delete(0,tk.END)
                                 adapter_label.place_forget()
                                 adapter_label.destroy()
@@ -176,39 +163,43 @@ try:
                                 progress.destroy()
                                 adapter_list()
                                 '''***** ENDS HERE *****'''
-                                #window.destroy()
                                 '''***** ENDS HERE *****'''
                             else:
                                 MessageBox = ctypes.windll.user32.MessageBoxW
-                                MessageBox(None, 'Wrong Choice', 'Window title', 0)
+                                MessageBox(None, 'Wrong Choice', 'MAcSpoof', 0)
                                 entry1.delete(0,tk.END)
-                                #print('134')
+
                         else:
                             entry1.delete(0,tk.END)
                             MessageBox = ctypes.windll.user32.MessageBoxW
-                            MessageBox(None, 'Wrong Choice', 'Window title', 0)
-                            #print('140')
+                            MessageBox(None, 'Wrong Choice', 'MAcSpoof', 0)
                     except:
                         stack = 'overflow'
                 entry1.bind('<Return>',change_mac_address)
                 button_choose = tk.Button(text='Go',height=0,width=12,fg="white",bg="blue",padx=5,command=change_mac_address,master=window)
-                button_choose.pack(pady=15,anchor='w')
-            entry.pack(anchor='w')
+                #button_choose.pack(pady=15,anchor='w')
+                button_choose.place(x='895',y='95')
+            #entry.pack(anchor='w')
+            entry.place(x='540',y='95')
+
             entry.after(2000,clear_entry)
         def adapter_list():
+                enc_file_scroll = tk.Scrollbar(window,width=16,elementborderwidth=0,highlightcolor='green',bg='green',bd=0,activebackground='green')
+                mylist = Listbox(window,width='90',height='7',yscrollcommand=enc_file_scroll.set,bg='green',bd=0,fg='#d6d6c2')
+                mylist.place(x='65',y='160')
+                enc_file_scroll.place(x='975',y='160',height=185)
                 dl = []
                 ml = []
                 Adapterlist = []
                 Addlist = []
-                subprocess.call('ipconfig /all > ip.txt',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
-                x = open("ip.txt",'r+')
+                subprocess.call('ipconfig /all > ip.law',shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
+                x = open("ip.law",'r+')
                 hu = x.readlines()
                 line_numbers = len(hu)
                 for i in range(0,line_numbers):
                     dev_des = hu[i].find('Description')
                     device = hu[i][dev_des:dev_des + 800]
                     device = device.strip(':').split('\n')
-                    #device = device.split('\n')
                     device = ''.join(device)
                     dl.append(device)
                 for r in dl:
@@ -216,7 +207,7 @@ try:
                         r = r.split('Description . . . . . . . . . . . : ')
                         r = ''.join(r)
                         Adapterlist.append(r)
-                x = open("ip.txt",'r+')
+                x = open("ip.law",'r+')
                 hu = x.readlines()
                 line_numbers = len(hu)
                 for j in range(0,line_numbers):
@@ -230,18 +221,18 @@ try:
                     if m != '':
                         m = m.split('Physical Address. . . . . . . . . : ')
                         m = ''.join(m)
-                        #print(r)
                         Addlist.append(m)
                 label_text = ""
                 for i,k,h in zip(range(1,len(Addlist)+1),Addlist,Adapterlist):
                     i,k,h = str(i),str(k),str(h)
-                    label_text += i+"  :  "+k+"\t\t"+h+"\n"
+                    label_text = i+"  :  "+k+"\t\t"+h+"\n"
+                    mylist.insert(END,'   ' + label_text)
                 label_text = label_text.strip(" ")
-                adapter_label = tk.Label(text = label_text,justify="left",fg='#d6d6c2',bg='#333338')
-                adapter_label.pack(anchor='w',side ="left",padx=30)
+                #adapter_label = tk.Label(text = label_text,justify="left",fg='#d6d6c2',bg='#333338')
+                #adapter_label.pack(anchor='w',side ="left",padx=30)
                 x.close()
-                os.system('del ip.txt')
-                entry(Addlist,Adapterlist,adapter_label)
+                os.system('del ip.law')
+                entry(Addlist,Adapterlist,mylist)
         def label3():
             label3 = tk.Label(text="Devices Found :",fg="#f7a483",bg='#333338')
             label3.place(x=10,y=100)
