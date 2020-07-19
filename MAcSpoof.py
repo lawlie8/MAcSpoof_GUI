@@ -20,7 +20,7 @@ try:
         ctypes.windll.shcore.SetProcessDpiAwareness(1)
         window = tk.Tk() #creates window
         window.tk.call('tk', 'scaling', 2.0)
-        window.geometry("1050x380")
+        window.geometry("1050x400")
         window.resizable(width=False,height=False)
         window.title("MAcSpoof")
         try:
@@ -35,14 +35,14 @@ try:
         def entry(Addlist,Adapterlist,adapter_label):
             entry = tk.Entry()
             entry.insert(0," Insert your option here")
-            entry.place(x=795,y=245)
+            entry.place(x=795,y=45)
             #entry.pack(anchor='e',side="right",pady=0,padx=50)
             def clear_entry():
                 entry.place_forget()
                 entry.destroy()
                 entry1 = tk.Entry()
                 #entry1.pack(anchor='e',side="right",pady=0,padx=50)
-                entry1.place(x=795,y=245)
+                entry1.place(x=795,y=45)
 
                 entry1.focus()
                 def change_mac_address(event):
@@ -59,7 +59,7 @@ try:
                                 choice = int(choice)
                                 #print(choice)#mac change code must go here beacuse i fucked up the design
                                 progress = Progressbar(window,orient=HORIZONTAL,length=1010,mode='determinate')
-                                progress.place(anchor='w',x=20,y=350)
+                                progress.place(anchor='w',x=20,y=375)
                                 #asd = input()
                                 progress['value'] = 10
                                 window.update_idletasks()
@@ -240,12 +240,15 @@ try:
                     adapter_list()
                 entry1.bind('<Return>',change_mac_address)
                 button_choose = tk.Button(text='Go',height=0,width=12,fg="white",bg="blue",padx=0,command=change_mac_address,master=window)
-                button_choose.place(x=795,y=280)#pady=0,padx=50,anchor='se',side='left',fill='x')
+                button_choose.place(x=795,y=85)#pady=0,padx=50,anchor='se',side='left',fill='x')
                 button_refresh = tk.Button(text='scan',height=0,width=6,fg="white",bg="blue",padx=0,command=refresh,master=window)
-                button_refresh.place(x=932,y=280)
+                button_refresh.place(x=932,y=85)
             #entry.pack(anchor='w')
             entry.after(1000,clear_entry)
         def adapter_list():
+                enc_file_scroll = tk.Scrollbar(window,width=18,elementborderwidth=0,highlightcolor='green',bg='green',bd=0,activebackground='green')
+                mylist = Listbox(window,width='83',height='8',yscrollcommand=enc_file_scroll.set,bg='green',bd=0,fg='#d6d6c2',font="Consolas")
+
                 dl = []
                 ml = []
                 Adapterlist = []
@@ -285,13 +288,18 @@ try:
                 label_text = ""
                 for i,k,h in zip(range(1,len(Addlist)+1),Addlist,Adapterlist):
                     i,k,h = str(i),str(k),str(h)
-                    label_text += i+"  :  "+k+"\t\t"+h+"\n"
-                label_text = label_text.strip(" ")
-                adapter_label = tk.Label(text = label_text,justify="left",fg='#d6d6c2',bg='#333338')
-                adapter_label.pack(anchor='n',side ="left",padx=30,fill='x')
+                    k=k.lower()
+                    mylist.insert(END,' ' + i+"  :  "+k+"   "+h+"\n")
+                    #label_text += i+"  :  "+k+"\t\t"+h+"\n"
+                mylist.place(x='55',y='160')
+                enc_file_scroll.place(x='975',y='160',height=195)#anchor='w',fill='y',side='right',pady=50,padx=20)
+
+                #label_text = label_text.strip(" ")
+                #adapter_label = tk.Label(text = label_text,justify="left",fg='#d6d6c2',bg='#333338')
+                #adapter_label.pack(anchor='n',side ="left",padx=30,fill='x')
                 x.close()
                 os.system('del ip.txt')
-                entry(Addlist,Adapterlist,adapter_label)
+                entry(Addlist,Adapterlist,mylist)
         def label3():
             label3 = tk.Label(text="Devices Found :",fg="#f7a483",bg='#333338')
             label3.pack(padx=10,side="top",anchor="w",pady=50)
